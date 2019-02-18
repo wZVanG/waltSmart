@@ -5,7 +5,7 @@ let width, height;
 
 function setup() {
 
-    let image_url = '6.jpg';
+    let image_url = '4.jpg';
     let dom_img = document.createElement('img');
     dom_img.src = image_url;
     dom_img.onload = function(){
@@ -103,12 +103,22 @@ function drawSkeleton() {
 
             var unique = partA.part + '_' + partB.part;
 
-            if(unique === 'leftElbow_leftShoulder'){
+            /*if(unique === 'leftElbow_leftShoulder'){
                 positions['a'] = partB.position;
                 positions['b'] = partA.position;
                 stroke(0,255,0);
             }else if(unique === 'leftHip_leftShoulder'){
                 positions['c'] = partA.position;
+                stroke(0,255,0);
+            }else{
+                stroke(255);
+            }*/
+            if(unique === 'leftElbow_leftShoulder'){
+                positions['b'] = partA.position;
+                positions['c'] = partB.position;
+                stroke(0,255,0);
+            }else if(unique === 'leftShoulder_rightShoulder'){
+                positions['a'] = partA.position;
                 stroke(0,255,0);
             }else{
                 stroke(255);
@@ -126,7 +136,7 @@ function drawSkeleton() {
     
     var distancia = {x: 0, y: (angulo  / 180) * Drone.max_height};
 
-    console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y, "cm.");
+    console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y + (Drone.max_height / 2), "cm.");
 
     EjemploAngulos(positions)  
 
@@ -190,7 +200,7 @@ function EjemploAngulos(defined_positions){
    
         var distancia = {x: 0, y: (angulo  / 180) * Drone.max_height};
 
-        console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y, "cm.");
+        console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y+ (Drone.max_height / 2), "cm.");
     }
 
     wrap.onclick = (event) => {
