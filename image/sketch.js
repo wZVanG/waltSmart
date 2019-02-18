@@ -85,7 +85,7 @@ function drawKeypoints() {
 }
 
 var Drone = {
-    max_height: 10000
+    max_height: 1000
 };
 
 // A function to draw the skeletons
@@ -128,6 +128,8 @@ function drawSkeleton() {
 
     console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y, "cm.");
 
+    EjemploAngulos(positions)  
+
 }
 
 /**
@@ -163,32 +165,49 @@ const ObtenerRadianes = (p1, centro, p2) => {
 }
 
 
-function EjemploAngulos(){
+function EjemploAngulos(defined_positions){
     const wrap = document.querySelector("#ejemplo_angulos")
     , a = wrap.querySelector('.a')
     , b = wrap.querySelector('.b')
     , c = wrap.querySelector('.c')
-    , positions = {a: {x: 70, y: 80}, b: {x: 120, y: 50}, c: {x: 70, y: 180}};
+    , positions = defined_positions ? defined_positions : {a: {x: 70, y: 80}, b: {x: 120, y: 50}, c: {x: 70, y: 180}};
 
-    a.style.left = positions.a.x + "px";
-    a.style.top = positions.a.y + "px";
+    function calc(){
 
-    b.style.left = positions.b.x + "px";
-    b.style.top = positions.b.y + "px";
+        a.style.left = positions.a.x + "px";
+        a.style.top = positions.a.y + "px";
+    
+        b.style.left = positions.b.x + "px";
+        b.style.top = positions.b.y + "px";
+    
+        c.style.left = positions.c.x + "px";
+        c.style.top = positions.c.y + "px";
 
-    c.style.left = positions.c.x + "px";
-    c.style.top = positions.c.y + "px";
+        
+        let radianes = ObtenerRadianes(Punto(positions.b.x, positions.b.y), Punto(positions.a.x, positions.a.y), Punto(positions.c.x, positions.c.y));
+        let angulo = Angulo(radianes);
+    
+   
+        var distancia = {x: 0, y: (angulo  / 180) * Drone.max_height};
 
-    let radianes = ObtenerRadianes(Punto(positions.b.x, positions.b.y), Punto(positions.a.x, positions.a.y), Punto(positions.c.x, positions.c.y));
-    let angulo = Angulo(radianes);
+        console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y, "cm.");
+    }
 
-    console.log('Ángulo:', angulo);
+    wrap.onclick = (event) => {
+  
+        positions.b.x = event.offsetX;
+        positions.b.y = event.offsetY;
+
+        calc();
+    }
+
+    calc();
 }
 
 
 
 document.addEventListener("DOMContentLoaded", function(event) { 
-    EjemploAngulos()    
+    
 });
 
 
