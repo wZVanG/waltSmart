@@ -84,18 +84,121 @@ function drawKeypoints() {
     }
 }
 
+var Drone = {
+    max_height: 10000
+};
+
 // A function to draw the skeletons
 function drawSkeleton() {
     // Loop through all the skeletons detected
+
+    var positions = {a: {}, b: {}, c: {}};
+
     for (let i = 0; i < poses.length; i++) {
         let skeleton = poses[i].skeleton;
         // For every skeleton, loop through all body connections
         for (let j = 0; j < skeleton.length; j++) {
             let partA = skeleton[j][0];
             let partB = skeleton[j][1];
-            stroke(255);
+
+            var unique = partA.part + '_' + partB.part;
+
+            if(unique === 'leftElbow_leftShoulder'){
+                positions['a'] = partB.position;
+                positions['b'] = partA.position;
+                stroke(0,255,0);
+            }else if(unique === 'leftHip_leftShoulder'){
+                positions['c'] = partA.position;
+                stroke(0,255,0);
+            }else{
+                stroke(255);
+            }
+            
             strokeWeight(1);
             line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
+
         }
     }
+
+    
+    let radianes = ObtenerRadianes(Punto(positions.b.x, positions.b.y), Punto(positions.a.x, positions.a.y), Punto(positions.c.x, positions.c.y));
+    let angulo = Angulo(radianes);
+    
+    var distancia = {x: 0, y: (angulo  / 180) * Drone.max_height};
+
+    console.log("positions", positions, "Ángulo: ", angulo, "Distancia vertical: ", distancia.y, "cm.");
+
+}
+
+/**
+ * Crea un punto
+ * @param {Number} x 
+ * @param {Number} y 
+ */
+const Punto = (x, y) => ({x,y});
+/*function Punto(x, y){
+    return {x, y}
+}*/
+
+/**
+ * Convierte radianes a ángulo
+ * @param {Number} radians 
+ */
+const Angulo = (radians) => 360 * radians / (2 * Math.PI)
+
+/**
+ * Obtiene radianes de 3 puntos
+ * @param {ObjectConstructor} p1 
+ * @param {ObjectConstructor} centro 
+ * @param {ObjectConstructor} p2 
+ */
+const ObtenerRadianes = (p1, centro, p2) => {
+	const transformedP1 = Punto(p1.x - centro.x, p1.y - centro.y)
+	const transformedP2 = Punto(p2.x - centro.x, p2.y - centro.y)
+
+	const angleToP1 = Math.atan2(transformedP1.y, transformedP1.x)
+	const angleToP2 = Math.atan2(transformedP2.y, transformedP2.x)
+
+	return angleToP2 - angleToP1;
+}
+
+
+function EjemploAngulos(){
+    const wrap = document.querySelector("#ejemplo_angulos")
+    , a = wrap.querySelector('.a')
+    , b = wrap.querySelector('.b')
+    , c = wrap.querySelector('.c')
+    , positions = {a: {x: 70, y: 80}, b: {x: 120, y: 50}, c: {x: 70, y: 180}};
+
+    a.style.left = positions.a.x + "px";
+    a.style.top = positions.a.y + "px";
+
+    b.style.left = positions.b.x + "px";
+    b.style.top = positions.b.y + "px";
+
+    c.style.left = positions.c.x + "px";
+    c.style.top = positions.c.y + "px";
+
+    let radianes = ObtenerRadianes(Punto(positions.b.x, positions.b.y), Punto(positions.a.x, positions.a.y), Punto(positions.c.x, positions.c.y));
+    let angulo = Angulo(radianes);
+
+    console.log('Ángulo:', angulo);
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+    EjemploAngulos()    
+});
+
+
+
+function normaliseToInteriorAngle(angle) {
+	if (angle < 0) {
+		angle += (2*Math.PI)
+	}
+	if (angle > Math.PI) {
+		angle = 2*Math.PI - angle
+	}
+	return angle
 }

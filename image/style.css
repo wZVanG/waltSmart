@@ -1,0 +1,7 @@
+html, body {
+	margin: 0;
+	padding: 0;
+  }
+
+#ejemplo_angulos{position: absolute;right: 0;background: #000; width: 300px; height: 300px}
+#ejemplo_angulos div {position: absolute; width:5px; height: 5px;background: #00ff00}
