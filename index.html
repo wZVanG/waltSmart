@@ -1,0 +1,32 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.2"></script>
+<script>
+	async function learnLinear(){
+		const model = tf.sequential();
+		model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+		
+		const learningRate = 0.000001;
+		const optimizer = tf.train.sgd(learningRate);
+
+		model.compile({
+			loss: 'meanSquaredError',
+			optimizer: optimizer,      
+		});
+	//	model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+		
+		//47 710 1013 13
+		/*const xs = tf.tensor2d([4,7,10], [3,1]);
+		const ys = tf.tensor2d([7,10,13], [3,1]);*/
+		//999,728,511,342,216,129
+		const xs = tf.tensor2d([999,728,511,342,216], [5,1]);
+		const ys = tf.tensor2d([728,511,342,216,129], [5,1]);
+
+		let result = await model.fit(xs, ys, {epochs: 1250});
+
+		const predict = model.predict(tf.tensor2d([129], [1,1]));
+
+		predict.print();
+
+		console.log("predict > ", result);
+	}
+	learnLinear();
+</script>
